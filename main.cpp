@@ -51,7 +51,7 @@ void setGrid(vector<vector<node>> &grid)
   }
 }
 
-void findNeighbour(vector<node> &emptyNode, vector<vector<node>> &grid, node currentPos)
+void findNeighbour(vector<node *> &emptyNode, vector<vector<node>> &grid, node currentPos)
 {
   if (grid.at(currentPos.position.first).at(currentPos.position.second).obs == 1 && grid.at(currentPos.position.first).at(currentPos.position.second).visited == 0)
   {
@@ -70,7 +70,7 @@ void findNeighbour(vector<node> &emptyNode, vector<vector<node>> &grid, node cur
           {
             // emptyNodes.(make_pair(currentPos.position.first + hori, currentPos.position.second + vert));
             node temp(make_pair(currentPos.position.first + hori, currentPos.position.second + vert));
-            emptyNode.push_back(temp);
+            emptyNode.push_back(&grid.at(currentPos.position.first + hori).at(currentPos.position.second + vert));
           }
         }
       }
@@ -87,16 +87,39 @@ int main()
       {node(make_pair(3, 0)), node(make_pair(3, 1)), node(make_pair(3, 2)), node(make_pair(3, 3)), node(make_pair(3, 4)), node(make_pair(3, 5)), node(make_pair(3, 6)), node(make_pair(3, 7)), node(make_pair(3, 8))},
       {node(make_pair(4, 0)), node(make_pair(4, 1)), node(make_pair(4, 2)), node(make_pair(4, 3)), node(make_pair(4, 4)), node(make_pair(4, 5)), node(make_pair(4, 6)), node(make_pair(4, 7)), node(make_pair(4, 8))},
       {node(make_pair(5, 0)), node(make_pair(5, 1)), node(make_pair(5, 2)), node(make_pair(5, 3)), node(make_pair(5, 4)), node(make_pair(5, 5)), node(make_pair(5, 6)), node(make_pair(5, 7)), node(make_pair(5, 8))}};
-
+  cout << "Done" << endl;
   setGrid(grid);
+  cout << "Done" << endl;
+  vector<node *> emptyNodes;
 
-  vector<node> emptyNodes;
-  findNeighbour(emptyNodes, grid, grid.at(1).at(8).position);
+  priority_queue<node *, vector<node *>, greater<node *>> pQueue;
+  cout << pQueue.empty() << endl;
+  pQueue.push(&grid.at(1).at(8));
 
-  for (const auto &k : emptyNodes)
+  findNeighbour(emptyNodes, grid, *pQueue.top());
+  for (auto nbhNode : emptyNodes)
   {
-    cout << k.position.first << " " << k.position.second << endl;
+    nbhNode->parent = pQueue.top();
+    nbhNode->findCost(*pQueue.top());
+    pQueue.push(nbhNode);
   }
-
+  pQueue.top()->visited = 1;
+  pQueue.pop();
+  emptyNodes.clear();
+  while (pQueue.empty() == 0)
+  {
+    findNeighbour(emptyNodes, grid, *pQueue.top());
+    for (auto nbhNode : emptyNodes)
+    {
+      nbhNode->parent = pQueue.top();
+      nbhNode->findCost(*pQueue.top());
+      pQueue.push(nbhNode);
+    }
+    pQueue.top()->visited = 1;
+    pQueue.pop();
+    emptyNodes.clear();
+    // cout << "Done" << endl;
+  }
+  cout << "Done" << endl;
   return 0;
 }

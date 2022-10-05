@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include <utility>
 using namespace std;
 
@@ -12,7 +13,7 @@ public:
   node *parent = nullptr;
   int visited{};
   int obs{1};
-  int push{};
+  // int push{};
   pair<int, int> position;
   float cost{9999999};
 
@@ -25,10 +26,16 @@ public:
   {
   }
 
-  // float findCost(node parent)
-  // {
-  //   cost = parent->cost + sqrt(static_cast<float>(pow((parent->position.first - position.first), 2) + pow((parent->position.second - position.second), 2)));
-  // }
+  float findCost(node parent)
+  {
+    int tempCost{};
+    tempCost = parent.cost + (sqrt(static_cast<float>(pow((parent.position.first - position.first), 2) + pow((parent.position.second - position.second), 2))));
+    if (tempCost < cost)
+    {
+      cost = tempCost;
+    }
+    return cost;
+  }
 
   bool operator>(const node &rhs) const
   {
