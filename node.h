@@ -15,6 +15,7 @@ public:
   int obs{1};
   // int push{};
   pair<int, int> position;
+  pair<int, int> positionF;
   float cost{9999999};
 
   node(pair<int, int> positioni)
@@ -26,10 +27,10 @@ public:
   {
   }
 
-  float findCost(node parent)
+  float findCost(node parent,pair<int, int> positionF)
   {
     int tempCost{};
-    tempCost = parent.cost + (sqrt(static_cast<float>(pow((parent.position.first - position.first), 2) + pow((parent.position.second - position.second), 2))));
+    tempCost = parent.cost + (sqrt(static_cast<float>(pow((parent.position.first - position.first), 2) + pow((parent.position.second - position.second), 2))))+(sqrt(static_cast<float>(pow((positionF.first - position.first), 2) + pow((positionF.second - position.second), 2))));
     if (tempCost < cost)
     {
       cost = tempCost;
